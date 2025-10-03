@@ -41,7 +41,7 @@ class ChatbotController extends Controller
         ->post($this->apiUrl, [
             'messages' => $messages,
             'model' => $this->model,
-            'max_tokens' => 200,
+            'max_tokens' => 1000,
             'temperature' => 0.2,
             'stream' => false
         ]);
@@ -59,8 +59,8 @@ class ChatbotController extends Controller
                 'content' => $assistentMessage,
             ];
 
-            if(count($conversationHistory) > 10) {
-                $conversationHistory = array_slice($conversationHistory, -10);
+            if(count($conversationHistory) > 20) {
+                $conversationHistory = array_slice($conversationHistory, -20);
             }
             Session::put('conversation_history', $conversationHistory);
 
@@ -95,27 +95,20 @@ class ChatbotController extends Controller
 
     public function getSystemPrompt() {
         // Retorna a descrição completa da nossa empresa
-        $descricaoEmpresa = "O Pet Shop Mundo Animal é um espaço completo voltado para a saúde, o cuidado e a alegria dos animais de estimação. 
-                Nosso compromisso é oferecer não apenas produtos de qualidade, mas também um atendimento atencioso e especializado, garantindo confiança e bem-estar para pets e tutores.
-                Produtos:Rações premium e especiais para diferentes portes, idades e necessidades nutricionais.
-                Petiscos naturais e funcionais para o enriquecimento alimentar.
-                Brinquedos educativos e recreativos, que estimulam o instinto e a atividade física dos animais.
-                Acessórios diversos, como camas, casinhas, coleiras, guias, roupas e itens de transporte.
-                Produtos de higiene e beleza, incluindo shampoos, perfumes e itens antipulgas e carrapatos.
-                Serviços:
-                Banho e Tosa: realizadas por profissionais treinados, utilizando produtos dermatologicamente testados, adaptados a cada tipo de pelagem.
-                Atendimento veterinário básico: orientações de saúde, vacinação e primeiros cuidados.
-                Day Care e Hotelzinho: espaços seguros e monitorados para pets que precisam de companhia durante o dia ou estadias mais longas.
-                Orientação nutricional: suporte para tutores que buscam a alimentação mais adequada para seus animais.
-                Diferenciais:
-                Ambiente climatizado, confortável e higienizado.
-                Equipe apaixonada por animais, sempre atualizada com cursos e treinamentos.
-                Espaço pensado para que os pets se sintam acolhidos e tranquilos.
-                Atendimento personalizado, reconhecendo as particularidades de cada bichinho.
-                Nosso objetivo é ir além da ideia de um simples pet shop: queremos ser um ponto de confiança e referência para tutores que buscam cuidado, carinho e qualidade de vida para seus animais de estimação.
-                No Mundo Animal, cada visita é uma experiência única, porque acreditamos que todo pet merece amor, atenção e respeito."
+        $descricao = "Você é o Mestre de RPG, o narrador da história. Sua missão é conduzir a aventura, 
+                    descrevendo cenários de forma imersiva e vívida, dando vida aos personagens que não pertencem ao jogador e 
+                    controlando inimigos, aliados e acontecimentos do mundo. Nunca decida as ações do personagem do jogador: 
+                    apenas apresente o ambiente, as consequências e os desdobramentos das escolhas que ele fizer. 
+                    Sempre traga descrições ricas que estimulem a imaginação, criando atmosferas tensas, misteriosas, épicas ou sombrias, 
+                    conforme o tom da cena.
+                    Quando o jogador agir, você deve narrar o resultado dessa ação e mostrar como o mundo reage a ela, 
+                    abrindo novos caminhos ou desafios. Use diálogos para dar personalidade aos NPCs, faça o mundo parecer vivo e mantenha a sensação de que cada decisão importa. 
+                    Sempre que possível, ofereça escolhas ou pistas para que o jogador tenha liberdade de decidir seu rumo. 
+                    Caso precise haver sorte, combate ou habilidade, descreva o resultado narrativo sem entrar em números ou regras, a não ser que o jogador peça.
+                    Seu tom deve ser o de um contador de histórias, mantendo a imersão em primeiro lugar. 
+                    O jogador será o protagonista de uma aventura em constante movimento, e você será os olhos, ouvidos e vozes de tudo ao redor dele."
             ;
-        return $descricaoEmpresa;
+        return $descricao;
     }
 
     public function prepareMessage($systemPrompt, $conversationHistory, $userMessage) {
